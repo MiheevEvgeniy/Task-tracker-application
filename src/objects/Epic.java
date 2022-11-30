@@ -1,15 +1,15 @@
 package objects;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
 
-    public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    int id;
 
-    String status;
+
+    private ArrayList<Integer> subtasks = new ArrayList<>();
+
 
     public Epic(String name, String description) {
         super(name, description);
@@ -18,31 +18,20 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status='" + status + '\'' +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", status='" + getStatus() + '\'' +
                 '}';
     }
-
-    @Override
-    public int getId() {
-        return id;
+    public ArrayList<Integer> getSubtasks() {
+        return subtasks;
     }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
+    public void setSubtasks(ArrayList<Integer> subtasks) {
+        this.subtasks = subtasks;
     }
-
-    @Override
-    public String getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(String status) {
-        this.status = status;
+    public void addSubtask(int value) {
+        this.subtasks.add(value);
     }
 
     @Override
@@ -51,11 +40,11 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return id == epic.id ;
+        return getId() == epic.getId() ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash( id);
+        return Objects.hash( getId());
     }
 }

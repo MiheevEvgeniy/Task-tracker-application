@@ -4,30 +4,40 @@ import java.util.Objects;
 
 public class Subtask extends Task {
 
-    public Epic epic;
 
-    int id;
-    String status;
 
-    public Subtask(String name, String description, Epic epic) {
+    private int epicId;
+
+    public Subtask(String name, String description, int epicId) {
         super(name, description);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, String status, Epic epic) {
-        super(name, description);
-        this.epic = epic;
-        this.status = status;
+    public Subtask(String name, String description, String status, int epicId) {
+        super(name, description, status);
+        this.epicId = epicId;
     }
 
+    public Subtask(String name, String description, int id, String status, int epicId) {
+        super(name, description, id, status);
+        this.epicId = epicId;
+    }
+
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
 
     @Override
     public String toString() {
         return "Subtask{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status='" + status + '\'' +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() + '\'' +
+                ", status='" + getStatus() + '\'' +
                 '}';
     }
 
@@ -37,31 +47,12 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return Objects.equals(epic, subtask.epic);
+        return Objects.equals(epicId, subtask.epicId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), epic);
+        return Objects.hash(super.hashCode(), epicId);
     }
 
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
