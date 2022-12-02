@@ -3,7 +3,7 @@ package controls;
 import objects.Epic;
 import objects.Subtask;
 import objects.Task;
-import objects.TaskStatuses;
+import objects.Status;
 
 public class Main {
 
@@ -44,6 +44,8 @@ public class Main {
         System.out.println(tm.getSubtasksByEpic(epic2.getId()));
         System.out.println("----------------------------");
 
+        tm.deleteSubtaskById(5);
+
         System.out.println("Список всех эпиков, подзадач и задач:");
         System.out.println(tm.getAllEpics());
         System.out.println(tm.getAllSubtasks());
@@ -51,7 +53,7 @@ public class Main {
         System.out.println("----------------------------");
 
         System.out.println("Обновление задачи2");
-        Task task3 = new Task("Купить яблоки", "Описание", tm.getAllTasks().get(1).getId(), TaskStatuses.IN_PROGRESS.name());
+        Task task3 = new Task("Купить яблоки", "Описание", tm.getAllTasks().get(1).getId(), Status.IN_PROGRESS);
         tm.updateTask(task3);
         System.out.println(tm.getAllTasks());
 
@@ -59,13 +61,13 @@ public class Main {
 
         System.out.println("Изменение статуса подзадачи и эпиков...");
 
-        Subtask subtask1_new = new Subtask("ПЭ1.1", "Описание",4, "IN PROGRESS", epic1.getId());
+        Subtask subtask1_new = new Subtask("ПЭ1.1", "Описание",4, Status.IN_PROGRESS, epic1.getId());
         tm.updateSubtask(subtask1_new);
 
-        Subtask subtask2_new = new Subtask("ПЭ1.2", "Описание",5, "DONE", epic1.getId());
+        Subtask subtask2_new = new Subtask("ПЭ1.2", "Описание",5, Status.DONE, epic1.getId());
         tm.updateSubtask(subtask2_new);
 
-        Subtask subtask3_new = new Subtask("ПЭ2", "Описание",7, "DONE", epic2.getId());
+        Subtask subtask3_new = new Subtask("ПЭ2", "Описание",7, Status.DONE, epic2.getId());
         tm.updateSubtask(subtask3_new);
 
         System.out.println(tm.getEpicById(3));

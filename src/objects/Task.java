@@ -7,20 +7,20 @@ public class Task {
     private String name;
     private String description;
     private int id;
-    private String status;
+    private Status status;
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Task(String name, String description, String status) {
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
     }
 
-    public Task(String name, String description, int id, String status) {
+    public Task(String name, String description, int id, Status status) {
         this.name = name;
         this.description = description;
         this.id = id;
@@ -58,11 +58,11 @@ public class Task {
         this.id = id;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

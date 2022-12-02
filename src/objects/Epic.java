@@ -5,9 +5,6 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-
-
-
     private ArrayList<Integer> subtasks = new ArrayList<>();
 
 
@@ -24,14 +21,25 @@ public class Epic extends Task {
                 ", status='" + getStatus() + '\'' +
                 '}';
     }
+
     public ArrayList<Integer> getSubtasks() {
         return subtasks;
     }
+
     public void setSubtasks(ArrayList<Integer> subtasks) {
         this.subtasks = subtasks;
     }
+
     public void addSubtask(int value) {
         this.subtasks.add(value);
+    }
+
+    public void clear() {
+        subtasks.clear();
+    }
+
+    public void removeSubtask(Integer id) {
+        subtasks.remove(id);
     }
 
     @Override
@@ -40,11 +48,11 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return getId() == epic.getId() ;
+        return getId() == epic.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash( getId());
+        return Objects.hash(getId());
     }
 }
