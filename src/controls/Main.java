@@ -1,14 +1,14 @@
 package controls;
 
 import objects.Epic;
+import objects.Status;
 import objects.Subtask;
 import objects.Task;
-import objects.Status;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager tm = new TaskManager();
+        InMemoryTaskManager tm = new InMemoryTaskManager();
 
         System.out.println("Тестирование задач...");
         System.out.println("Создание задач...");
@@ -44,7 +44,6 @@ public class Main {
         System.out.println(tm.getSubtasksByEpic(epic2.getId()));
         System.out.println("----------------------------");
 
-        tm.deleteSubtaskById(5);
 
         System.out.println("Список всех эпиков, подзадач и задач:");
         System.out.println(tm.getAllEpics());
@@ -75,8 +74,6 @@ public class Main {
         System.out.println(tm.getEpicById(6));
         System.out.println(tm.getSubtasksByEpic(epic2.getId()));
 
-
-
         System.out.println("Удаление эпика...");
         System.out.println(tm.getEpicById(3));
         System.out.println(tm.getSubtasksByEpic(epic1.getId()));
@@ -84,6 +81,9 @@ public class Main {
         System.out.println("Эпик удален...");
         System.out.println(tm.getEpicById(3));
         System.out.println(tm.getSubtasksByEpic(epic1.getId()));
+
+
+        System.out.println(tm.getHistory());
 
 
 
