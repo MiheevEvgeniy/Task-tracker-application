@@ -5,6 +5,7 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -52,5 +53,7 @@ public interface TaskManager {
     void updateSubtask(Subtask updatedSubtask);
 
     void deleteSubtaskById(int id);
+
+    List<Task> getHistory();
 
 }

@@ -1,4 +1,5 @@
-import managers.InMemoryTaskManager;
+import managers.Managers;
+import managers.TaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -7,7 +8,7 @@ import tasks.Task;
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager tm = new InMemoryTaskManager();
+        TaskManager tm = Managers.getDefault();
 
         System.out.println("Тестирование задач...");
         System.out.println("Создание задач...");
