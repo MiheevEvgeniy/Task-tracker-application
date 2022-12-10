@@ -1,9 +1,8 @@
-package controls;
-
-import objects.Epic;
-import objects.Status;
-import objects.Subtask;
-import objects.Task;
+import managers.InMemoryTaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 public class Main {
 
@@ -18,7 +17,6 @@ public class Main {
         tm.createTask(task2);
         System.out.println(tm.getAllTasks());
         System.out.println("----------------------------");
-
 
         System.out.println("Создание эпика1...");
         Epic epic1 = new Epic("Эпик1", "Описание");
@@ -60,13 +58,13 @@ public class Main {
 
         System.out.println("Изменение статуса подзадачи и эпиков...");
 
-        Subtask subtask1_new = new Subtask("ПЭ1.1", "Описание",4, Status.IN_PROGRESS, epic1.getId());
+        Subtask subtask1_new = new Subtask("ПЭ1.1", "Описание", 4, Status.IN_PROGRESS, epic1.getId());
         tm.updateSubtask(subtask1_new);
 
-        Subtask subtask2_new = new Subtask("ПЭ1.2", "Описание",5, Status.DONE, epic1.getId());
+        Subtask subtask2_new = new Subtask("ПЭ1.2", "Описание", 5, Status.DONE, epic1.getId());
         tm.updateSubtask(subtask2_new);
 
-        Subtask subtask3_new = new Subtask("ПЭ2", "Описание",7, Status.DONE, epic2.getId());
+        Subtask subtask3_new = new Subtask("ПЭ2", "Описание", 7, Status.DONE, epic2.getId());
         tm.updateSubtask(subtask3_new);
 
         System.out.println(tm.getEpicById(3));
@@ -84,8 +82,6 @@ public class Main {
 
 
         System.out.println(tm.getHistory());
-
-
 
     }
 }

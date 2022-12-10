@@ -1,19 +1,18 @@
-package controls;
+package managers;
 
-import objects.Epic;
-import objects.Subtask;
-import objects.Task;
-import objects.Status;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.Status;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager implements TaskManager, HistoryManager{
-    private int id = 0;
+public class InMemoryTaskManager implements TaskManager {
 
-    private final Managers managers = new Managers();
-    private HistoryManager historyManager = managers.getDefaultHistory();
+    private int id = 0;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
@@ -77,7 +76,7 @@ public class InMemoryTaskManager implements TaskManager, HistoryManager{
     public void deleteEpics() {
         epics.clear();
     }
-    
+
     @Override
     public Epic getEpicById(int id) {
         historyManager.add(epics.get(id));
@@ -182,6 +181,23 @@ public class InMemoryTaskManager implements TaskManager, HistoryManager{
         updateEpicStatus(epicId);
     }
 
+    @Override
+    public void deleteSubtaskById(int id) {
+        Subtask subtask = subtasks.remove(id);
+        if (subtask == null) {
+            return;
+        }
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.removeSubtask(id);
+        updateEpicStatus(epic.getId());
+
+
+    }
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
     private void updateEpicStatus(int epicId) {
         Epic epic = epics.get(epicId);
         boolean isDone = true;
@@ -201,29 +217,5 @@ public class InMemoryTaskManager implements TaskManager, HistoryManager{
         } else {
             epic.setStatus(Status.NEW);
         }
-    }
-
-    @Override
-    public void deleteSubtaskById(int id) {
-        Subtask subtask = subtasks.remove(id);
-        if (subtask == null) {
-            return;
-        }
-        Epic epic = epics.get(subtask.getEpicId());
-        epic.removeSubtask(id);
-        updateEpicStatus(epic.getId());
-
-
-    }
-
-
-    @Override
-    public void add(Task task) {
-        historyManager.add(task);
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return historyManager.getHistory();
     }
 }

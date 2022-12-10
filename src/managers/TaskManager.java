@@ -1,22 +1,25 @@
-package controls;
+package managers;
 
-import objects.Epic;
-import objects.Subtask;
-import objects.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public interface TaskManager {
 
 
     //-------------tasks--------------------
     ArrayList<Task> getAllTasks();
+
     void deleteTasks();
+
     Task getTaskById(int id);
+
     void createTask(Task task);
+
     void updateTask(Task updatedTask);
+
     void deleteTaskById(int id);
 
     //---------------epics----------------

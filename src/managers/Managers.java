@@ -1,11 +1,11 @@
-package controls;
+package managers;
 
 public class Managers {
-    TaskManager getDefault(){
+    public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
-     HistoryManager getDefaultHistory(){
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 }
