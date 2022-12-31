@@ -25,6 +25,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
+        for (Task task: tasks.values()) {
+            historyManager.remove(task.getId());
+        }
         tasks.clear();
     }
 
@@ -60,7 +63,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(id)) {
             System.out.println("Задача не найдена");
         } else {
+            historyManager.remove(id);
             tasks.remove(id);
+
         }
     }
 
@@ -74,6 +79,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpics() {
+        for (Epic epic:epics.values()) {
+            historyManager.remove(epic.getId());
+            for (Integer subId: epic.getSubtasks()) {
+                historyManager.remove(subId);
+            }
+        }
+        subtasks.clear();
         epics.clear();
     }
 
@@ -107,8 +119,13 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпик не найден");
         } else {
             Epic epic = epics.get(id);
+            for (Integer subId: epic.getSubtasks()) {
+                subtasks.remove(subId);
+                historyManager.remove(subId);
+            }
             epic.clear();
             epics.remove(id);
+            historyManager.remove(id);
         }
     }
 
@@ -122,6 +139,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtasks() {
+        for (Subtask subtask:subtasks.values()) {
+            historyManager.remove(subtask.getId());
+        }
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.setStatus(Status.NEW);
@@ -184,6 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtaskById(int id) {
         Subtask subtask = subtasks.remove(id);
+        historyManager.remove(id);
         if (subtask == null) {
             return;
         }

@@ -6,10 +6,9 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public interface TaskManager {
-
-
     //-------------tasks--------------------
     ArrayList<Task> getAllTasks();
 
