@@ -2,26 +2,32 @@ package managers;
 
 import tasks.Task;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    Node head;
-    Node tail;
-    HashMap<Integer, Node> nodesById = new HashMap<>();
+    private Node head;
+    private Node tail;
+    private final Map<Integer, Node> nodesById = new HashMap<>();
 
     @Override
     public void add(Task task) {
         if (task == null) {
             return;
         }
+        if (nodesById.get(task.getId()) != null) {
+            removeNode(nodesById.get(task.getId()));
+        }
         linkLast(task);
+        nodesById.put(task.getId(), tail);
 
     }
 
     @Override
     public void remove(int id) {
         removeNode(nodesById.get(id));
-        nodesById.remove(id);
     }
 
 
@@ -37,44 +43,39 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkLast(Task task) {
-        if (nodesById.get(task.getId()) != null) {
-            removeNode(nodesById.get(task.getId()));
-        }
-
         final Node newNode = new Node(tail, task, null);
-        if (tail == null){
+        if (head == null){
             head = newNode;
         } else {
             tail.next = newNode;
         }
         tail = newNode;
-        nodesById.put(task.getId(), newNode);
-
     }
 
     private void removeNode(Node node){
-        Node next = node.next;
-        Node prev = node.prev;
-
-        if (prev == null) {
-            head = next;
-        } else {
-            prev.next = next;
-            node.prev = null;
+        if (nodesById.remove(node.currentItem.getId()) == null) {
+            return;
         }
 
-        if (next == null) {
-            tail = prev;
+        if (node.prev != null) {
+            node.prev.next = node.next;
+            if (node.next == null){
+                tail = node.prev;
+            } else{
+                node.next.prev = node.prev;
+            }
         } else {
-            next.prev = prev;
-            node.next = null;
+            head = node.next;
+            if (head == null){
+                tail = null;
+            } else{
+                head.prev = null;
+            }
         }
-
-        node.currentItem = null;
     }
 
     private ArrayList<Node> getTasks(){
-        return  new ArrayList<>(nodesById.values());
+        return new ArrayList<>(nodesById.values());
     }
     private static class Node{
         Task currentItem;
