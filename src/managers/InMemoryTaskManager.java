@@ -1,9 +1,9 @@
 package managers;
 
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.Status;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private int id = 0;
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected int id = 0;
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
-        for (Task task: tasks.values()) {
+        for (Task task : tasks.values()) {
             historyManager.remove(task.getId());
         }
         tasks.clear();
@@ -80,9 +80,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpics() {
-        for (Epic epic:epics.values()) {
+        for (Epic epic : epics.values()) {
             historyManager.remove(epic.getId());
-            for (Integer subId: epic.getSubtasks()) {
+            for (Integer subId : epic.getSubtasks()) {
                 historyManager.remove(subId);
             }
         }
@@ -120,7 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпик не найден");
         } else {
             Epic epic = epics.get(id);
-            for (Integer subId: epic.getSubtasks()) {
+            for (Integer subId : epic.getSubtasks()) {
                 subtasks.remove(subId);
                 historyManager.remove(subId);
             }
@@ -140,7 +140,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtasks() {
-        for (Subtask subtask:subtasks.values()) {
+        for (Subtask subtask : subtasks.values()) {
             historyManager.remove(subtask.getId());
         }
         subtasks.clear();
