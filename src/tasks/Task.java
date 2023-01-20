@@ -9,15 +9,19 @@ public class Task {
     private int id;
     private Status status;
 
+    private Types type;
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.type = Types.TASK;
     }
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = Types.TASK;
     }
 
     public Task(String name, String description, int id, Status status) {
@@ -25,8 +29,14 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+        this.type = Types.TASK;
     }
-
+    public Types getType() {
+        return type;
+    }
+    public void setType(Types type) {
+        this.type = type;
+    }
     @Override
     public String toString() {
         return "Task{" +

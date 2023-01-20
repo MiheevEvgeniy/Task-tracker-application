@@ -1,5 +1,6 @@
 package tasks;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -9,15 +10,18 @@ public class Subtask extends Task {
     public Subtask(String name, String description, int epicId) {
         super(name, description);
         this.epicId = epicId;
+        setType(Types.SUBTASK);
     }
 
     public Subtask(String name, String description, Status status, int epicId) {
         super(name, description, status);
         this.epicId = epicId;
+        setType(Types.SUBTASK);
     }
 
     public Subtask(String name, String description, int id, Status status, int epicId) {
         super(name, description, id, status);
+        setType(Types.SUBTASK);
         this.epicId = epicId;
     }
 
