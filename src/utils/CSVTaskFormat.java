@@ -1,19 +1,18 @@
-package tasks;
+package utils;
 
 import managers.HistoryManager;
-import managers.InMemoryTaskManager;
+import tasks.*;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVTaskFormat {
 
-    public String getHeader() {
+    public static String getHeader() {
         return "id,type,name,status,description,epic";
     }
 
-    public String historyToString(HistoryManager manager) {
+    public static String historyToString(HistoryManager manager) {
         final List<Task> history = manager.getHistory();
         if (history.isEmpty()) {
             return "";
@@ -28,7 +27,7 @@ public class CSVTaskFormat {
         return stringBuilder.toString();
     }
 
-    public List<Integer> historyFromString(String line) {
+    public static List<Integer> historyFromString(String line) {
         List<Integer> history = new ArrayList<>();
         for (String id : line.split(",")) {
             history.add(Integer.parseInt(id));
@@ -36,25 +35,24 @@ public class CSVTaskFormat {
         return history;
     }
 
-    public String toString(Task task) {
-        if (task.getType() == Types.SUBTASK){
+    public static String toString(Task task) {
+        if (task.getType() == Types.SUBTASK) {
             Subtask subtask = (Subtask) task;
             return subtask.getId() + "," + task.getType() + "," + subtask.getName() + ","
-                    + subtask.getStatus() + "," + subtask.getDescription()+ ","+ subtask.getEpicId() +",\n";
+                    + subtask.getStatus() + "," + subtask.getDescription() + "," + subtask.getEpicId() + ",\n";
         }
         return task.getId() + "," + task.getType() + "," + task.getName() + ","
-                + task.getStatus() + "," + task.getDescription()+ ",\n";
+                + task.getStatus() + "," + task.getDescription() + ",\n";
     }
-    public Task fromString(String line) {
+
+    public static Task fromString(String line) {
         String[] values = line.split(",");
-        if(Types.valueOf(values[1]).equals(Types.TASK)){
-            return new Task(values[2], values[4], Integer.parseInt(values[0]),
-                    Status.valueOf(values[3]));
-        } else if(Types.valueOf(values[1]).equals(Types.SUBTASK)){
-            return new Subtask(values[2], values[4], Integer.parseInt(values[0]),
-                    Status.valueOf(values[3]), Integer.parseInt(values[5]));
+        if (Types.valueOf(values[1]).equals(Types.TASK)) {
+            return new Task(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]));
+        } else if (Types.valueOf(values[1]).equals(Types.SUBTASK)) {
+            return new Subtask(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]),
+                    Integer.parseInt(values[5]));
         }
-        return new Epic(values[2], values[4], Integer.parseInt(values[0]),
-                Status.valueOf(values[3]));
+        return new Epic(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]));
     }
 }

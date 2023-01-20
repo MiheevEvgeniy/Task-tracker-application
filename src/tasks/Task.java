@@ -31,12 +31,15 @@ public class Task {
         this.status = status;
         this.type = Types.TASK;
     }
+
     public Types getType() {
         return type;
     }
+
     public void setType(Types type) {
         this.type = type;
     }
+
     @Override
     public String toString() {
         return "Task{" +
