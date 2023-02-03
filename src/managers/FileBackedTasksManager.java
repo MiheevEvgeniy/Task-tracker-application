@@ -36,7 +36,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private void save() throws ManagerSaveException {
-
+        if (filename == null) {
+            return;
+        }
         try (BufferedWriter filewriter = new BufferedWriter(new FileWriter(filename))) {
             filewriter.write(CSVTaskFormat.getHeader());
             filewriter.newLine();

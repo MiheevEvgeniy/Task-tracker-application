@@ -1,5 +1,6 @@
 package tasks;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -11,9 +12,15 @@ public class Task {
 
     private Types type;
 
+    private int duration;
+
+    private LocalDateTime startTime;
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        setStartTime(LocalDateTime.MAX);
+        setDuration(0);
         this.type = Types.TASK;
     }
 
@@ -21,7 +28,18 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+        setStartTime(LocalDateTime.MAX);
+        setDuration(0);
         this.type = Types.TASK;
+    }
+
+    public Task(String name, String description, int id) {
+        this.name = name;
+        this.description = description;
+        setStartTime(LocalDateTime.MAX);
+        setDuration(0);
+        this.type = Types.TASK;
+        this.id = id;
     }
 
     public Task(String name, String description, int id, Status status) {
@@ -29,11 +47,54 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+        setStartTime(LocalDateTime.MAX);
+        setDuration(0);
         this.type = Types.TASK;
+    }
+
+    public Task(String name, String description, LocalDateTime startTime, int duration) {
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.type = Types.TASK;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String description, int id, Status status, LocalDateTime startTime, int duration) {
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.type = Types.TASK;
+        this.startTime = startTime;
+        this.id = id;
+        this.status = status;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public Types getType() {
         return type;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime.equals(LocalDateTime.MAX)) {
+            return startTime;
+        }
+        return startTime.plusMinutes(duration);
     }
 
     public void setType(Types type) {
@@ -47,6 +108,7 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status='" + status + '\'' +
+                ", startTime='" + startTime + '\'' +
                 '}';
     }
 

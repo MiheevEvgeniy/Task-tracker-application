@@ -3,13 +3,14 @@ package utils;
 import managers.HistoryManager;
 import tasks.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVTaskFormat {
 
     public static String getHeader() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,status,description,startTime,endTime,epic";
     }
 
     public static String historyToString(HistoryManager manager) {
@@ -38,20 +39,36 @@ public class CSVTaskFormat {
     public static String toString(Task task) {
         if (task.getType() == Types.SUBTASK) {
             Subtask subtask = (Subtask) task;
+
             return subtask.getId() + "," + task.getType() + "," + subtask.getName() + ","
-                    + subtask.getStatus() + "," + subtask.getDescription() + "," + subtask.getEpicId() + ",\n";
+                    + subtask.getStatus() + "," + subtask.getDescription() + "," + task.getStartTime() + ","
+                    + task.getEndTime() + "," + subtask.getEpicId() + ",\n";
         }
         return task.getId() + "," + task.getType() + "," + task.getName() + ","
-                + task.getStatus() + "," + task.getDescription() + ",\n";
+                + task.getStatus() + "," + task.getDescription() + "," + task.getStartTime() + ","
+                + task.getEndTime() + ",\n";
     }
 
     public static Task fromString(String line) {
         String[] values = line.split(",");
         if (Types.valueOf(values[1]).equals(Types.TASK)) {
-            return new Task(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]));
+            return new Task(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]),
+                    LocalDateTime.parse(values[5]),
+                    LocalDateTime
+                            .parse(values[5])
+                            .minusSeconds(LocalDateTime
+                                    .parse(values[6])
+                                    .getSecond())
+                            .getMinute());
         } else if (Types.valueOf(values[1]).equals(Types.SUBTASK)) {
             return new Subtask(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]),
-                    Integer.parseInt(values[5]));
+                    LocalDateTime.parse(values[5]),
+                    LocalDateTime
+                            .parse(values[5])
+                            .minusSeconds(LocalDateTime
+                                    .parse(values[6])
+                                    .getSecond())
+                            .getMinute(), Integer.parseInt(values[7]));
         }
         return new Epic(values[2], values[4], Integer.parseInt(values[0]), Status.valueOf(values[3]));
     }
