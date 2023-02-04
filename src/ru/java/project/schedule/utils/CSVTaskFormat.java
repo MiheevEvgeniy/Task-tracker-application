@@ -1,7 +1,7 @@
-package utils;
+package ru.java.project.schedule.utils;
 
-import managers.HistoryManager;
-import tasks.*;
+import ru.java.project.schedule.managers.HistoryManager;
+import ru.java.project.schedule.tasks.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

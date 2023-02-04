@@ -1,3 +1,5 @@
+package ru.java.project.schedule;
+
 import java.nio.file.Path;
 
 public class Main {

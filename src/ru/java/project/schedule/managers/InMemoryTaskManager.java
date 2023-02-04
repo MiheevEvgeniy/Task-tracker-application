@@ -1,9 +1,9 @@
-package managers;
+package ru.java.project.schedule.managers;
 
-import tasks.Epic;
-import tasks.Status;
-import tasks.Subtask;
-import tasks.Task;
+import ru.java.project.schedule.tasks.Epic;
+import ru.java.project.schedule.tasks.Status;
+import ru.java.project.schedule.tasks.Subtask;
+import ru.java.project.schedule.tasks.Task;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final TreeSet<Task> sortedTasksAndSubtasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
-    //-------------tasks--------------------
+    //-------------ru.java.project.schedule.tasks--------------------
     @Override
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
@@ -55,10 +55,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task updatedTask) {
-        if (!validate(updatedTask)) {
-            System.out.println("Задача пересекается с другой");
-            return;
-        }
         if (tasks.containsValue(updatedTask)) {
             if (updatedTask.getStatus() == null) {
                 updatedTask.setStatus(tasks.get(updatedTask.getId()).getStatus());
@@ -211,10 +207,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask updatedSubtask) {
-        if (!validate(updatedSubtask)) {
-            System.out.println("Подзадача пересекается с другой");
-            return;
-        }
         final int id = updatedSubtask.getId();
         final int epicId = updatedSubtask.getEpicId();
         final Subtask savedSubtask = subtasks.get(id);

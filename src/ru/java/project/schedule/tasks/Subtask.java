@@ -1,4 +1,4 @@
-package tasks;
+package ru.java.project.schedule.tasks;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

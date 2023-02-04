@@ -1,13 +1,13 @@
-package managers;
+package ru.java.project.schedule.managers;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import ru.java.project.schedule.tasks.Epic;
+import ru.java.project.schedule.tasks.Subtask;
+import ru.java.project.schedule.tasks.Task;
 
 import java.util.List;
 
 public interface TaskManager {
-    //-------------tasks--------------------
+    //-------------ru.java.project.schedule.tasks--------------------
     List<Task> getAllTasks();
 
     void deleteTasks();

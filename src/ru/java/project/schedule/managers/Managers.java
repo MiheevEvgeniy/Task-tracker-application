@@ -1,4 +1,4 @@
-package managers;
+package ru.java.project.schedule.managers;
 
 import java.io.File;
 

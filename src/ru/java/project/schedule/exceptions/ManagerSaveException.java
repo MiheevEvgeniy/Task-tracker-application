@@ -1,4 +1,4 @@
-package exceptions;
+package ru.java.project.schedule.exceptions;
 
 
 public class ManagerSaveException extends RuntimeException {

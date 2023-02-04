@@ -1,6 +1,6 @@
-package managers;
+package ru.java.project.schedule.managers;
 
-import tasks.Task;
+import ru.java.project.schedule.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;

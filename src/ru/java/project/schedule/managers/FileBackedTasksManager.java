@@ -1,11 +1,11 @@
-package managers;
+package ru.java.project.schedule.managers;
 
 
-import exceptions.ManagerSaveException;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import utils.CSVTaskFormat;
+import ru.java.project.schedule.exceptions.ManagerSaveException;
+import ru.java.project.schedule.tasks.Epic;
+import ru.java.project.schedule.tasks.Subtask;
+import ru.java.project.schedule.tasks.Task;
+import ru.java.project.schedule.utils.CSVTaskFormat;
 
 import java.io.BufferedWriter;
 import java.io.File;
