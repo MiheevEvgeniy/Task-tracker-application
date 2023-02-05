@@ -2,6 +2,8 @@ package ru.java.project.schedule.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import ru.java.project.schedule.exceptions.ValidateException;
 import ru.java.project.schedule.managers.TaskManager;
 import ru.java.project.schedule.tasks.Epic;
 import ru.java.project.schedule.tasks.Status;
@@ -173,15 +175,29 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void validate() {
+    public void add() {
         Task wrongTimeTask1 = new Task("Test Task", "Description", 100, Status.NEW, task1.getEndTime(), 400);
         Task wrongTimeTask2 = new Task("Test Task", "Description", 101, Status.NEW, task1.getEndTime().plusMinutes(200), 400);
         Task wrongTimeTask3 = new Task("Test Task", "Description", 102, Status.NEW, subtask5.getEndTime().minusSeconds(1), 400);
 
-        manager.createTask(wrongTimeTask1);
-        manager.createTask(wrongTimeTask2);
-        manager.createTask(wrongTimeTask3);
-
+        assertThrows(ValidateException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createTask(wrongTimeTask1);
+            }
+        });
+        assertThrows(ValidateException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createTask(wrongTimeTask2);
+            }
+        });
+        assertThrows(ValidateException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createTask(wrongTimeTask3);
+            }
+        });
         assertFalse(manager.getAllTasks().contains(wrongTimeTask1), "Добавлены данные с пересечением");
         assertFalse(manager.getAllTasks().contains(wrongTimeTask2), "Добавлены данные с пересечением");
         assertFalse(manager.getAllTasks().contains(wrongTimeTask3), "Добавлены данные с пересечением");
@@ -189,7 +205,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void updateTask() {
-        Task newTask = new Task("Updated Test Task", "Updated Description", 1, Status.NEW, LocalDateTime.now(), 400);
+        Task newTask = new Task("Updated Test Task", "Updated Description", 1, Status.NEW, task1.getStartTime(), 400);
         manager.updateTask(newTask);
 
         Task savedTask = manager.getTaskById(1);

@@ -109,6 +109,7 @@ public class Task {
                 ", id=" + id +
                 ", status='" + status + '\'' +
                 ", startTime='" + startTime + '\'' +
+                ", endTime='" + getEndTime() + '\'' +
                 '}';
     }
 

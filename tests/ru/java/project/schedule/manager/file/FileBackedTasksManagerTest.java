@@ -22,7 +22,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @BeforeEach
     public void setUp() {
-        file = new File("src/ru/java/project/schedule/resources/test_" + System.nanoTime() + ".csv");
+        file = new File("resources/test_" + System.nanoTime() + ".csv");
         manager = new FileBackedTasksManager(file);
         initTasks();
     }
