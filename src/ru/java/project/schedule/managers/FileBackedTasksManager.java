@@ -207,42 +207,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        FileBackedTasksManager tm = new FileBackedTasksManager(Path.of("save.csv").toFile());
-        tm.createTask(new Task("Задача1", "Описание1"));
-        tm.createTask(new Task("Задача2", "Описание2"));
-        tm.createEpic(new Epic("Эпик1", "Описание Эпика"));
-        tm.createSubtask(new Subtask("Подзадача1", "Описание подзадачи1", 3));
-        tm.createSubtask(new Subtask("Подзадача2", "Описание подзадачи2", 3));
-        tm.createSubtask(new Subtask("Подзадача3", "Описание подзадачи3", 3));
 
-        tm.getTaskById(1);
-        tm.getEpicById(3);
-        tm.getEpicById(3);
-        tm.getTaskById(2);
-        tm.getTaskById(1);
-        tm.getSubtaskById(4);
-        tm.getSubtaskById(6);
-        tm.getSubtaskById(5);
-        tm.getSubtaskById(4);
-
-        System.out.println("История старая:");
-        for (Task task : tm.getHistory()) {
-            System.out.println(task.toString());
-        }
-        System.out.println("Данные:");
-        System.out.println(tm.getAllEpics());
-        System.out.println(tm.getAllTasks());
-        System.out.println(tm.getAllSubtasks());
-
-        System.out.println("--------------------------------");
-        System.out.println("История новая:");
-        FileBackedTasksManager newTm = tm.getLoadedManager();
-        for (Task task : newTm.getHistory()) {
-            System.out.println(task.toString());
-        }
-        System.out.println("Данные:");
-        System.out.println(newTm.getAllEpics());
-        System.out.println(newTm.getAllTasks());
-        System.out.println(newTm.getAllSubtasks());
     }
 }

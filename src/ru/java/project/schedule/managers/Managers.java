@@ -1,10 +1,16 @@
 package ru.java.project.schedule.managers;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Managers {
     public static TaskManager getDefault() {
-        return new FileBackedTasksManager(new File("save.csv"));
+        try {
+            return new HttpTaskManager("http://localhost:8078/","1");
+        }catch (IOException|InterruptedException e){
+            System.out.println(e);
+            return null;
+        }
     }
 
     public static HistoryManager getDefaultHistory() {

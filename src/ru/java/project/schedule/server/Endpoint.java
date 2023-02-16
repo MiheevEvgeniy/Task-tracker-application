@@ -1,0 +1,23 @@
+package ru.java.project.schedule.server;
+
+public enum Endpoint {
+    GET_ALL_TASKS,
+    GET_TASK,
+    DELETE_TASK,
+    DELETE_ALL_TASKS,
+    POST_TASK,
+    GET_ALL_SUBTASKS,
+    GET_SUBTASK,
+    DELETE_SUBTASK,
+    DELETE_ALL_SUBTASKS,
+    POST_SUBTASK,
+    GET_ALL_EPICS,
+    GET_EPIC,
+    GET_EPIC_SUBTASKS,
+    DELETE_EPIC,
+    DELETE_ALL_EPICS,
+    POST_EPIC,
+    GET_HISTORY,
+    GET_PRIORITIZED_TASKS
+
+}
