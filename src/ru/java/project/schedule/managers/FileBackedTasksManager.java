@@ -18,28 +18,28 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private String filename;
+    private File filename;
 
     public FileBackedTasksManager(File file) {
-        this.filename = file.toPath().toString();
+        this.filename = file;
     }
 
     public FileBackedTasksManager() {
     }
 
-    public void setFilename(String filename) {
+    public void setFilename(File filename) {
         this.filename = filename;
     }
 
     public FileBackedTasksManager getLoadedManager() {
-        return loadFromFile(Path.of(filename).toFile());
+        return loadFromFile(Path.of(filename.toPath().toString()).toFile());
     }
 
-    private void save() throws ManagerSaveException {
+    protected void save() throws ManagerSaveException {
         if (filename == null) {
             return;
         }
-        try (BufferedWriter filewriter = new BufferedWriter(new FileWriter(filename))) {
+        try (BufferedWriter filewriter = new BufferedWriter(new FileWriter(filename.toPath().toString()))) {
             filewriter.write(CSVTaskFormat.getHeader());
             filewriter.newLine();
 

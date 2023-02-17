@@ -2,9 +2,8 @@ package ru.java.project.schedule.managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import ru.java.project.schedule.client.KVTaskClient;
-import ru.java.project.schedule.server.HttpTaskServer;
-import ru.java.project.schedule.server.KVServer;
 import ru.java.project.schedule.server.adapters.LocalDateTimeAdapter;
 import ru.java.project.schedule.server.deserializers.EpicDeserializer;
 import ru.java.project.schedule.server.deserializers.SubtaskDeserializer;
@@ -12,76 +11,85 @@ import ru.java.project.schedule.server.deserializers.TaskDeserializer;
 import ru.java.project.schedule.tasks.Epic;
 import ru.java.project.schedule.tasks.Subtask;
 import ru.java.project.schedule.tasks.Task;
+import ru.java.project.schedule.tasks.Types;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class HttpTaskManager extends FileBackedTasksManager implements TaskManager{
-    String url;
-    String keyManager;
-    KVTaskClient kvTaskClient;
-    private final static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Subtask.class, new SubtaskDeserializer())
-            .registerTypeAdapter(Epic.class, new EpicDeserializer())
-            .registerTypeAdapter(Task.class, new TaskDeserializer())
-            .create();
-    public HttpTaskManager(String url, String keyManager) throws IOException, InterruptedException {
-        this.url = url;
-        this.keyManager = keyManager;
-        kvTaskClient = new KVTaskClient(url);
+public class HttpTaskManager extends FileBackedTasksManager {
+    private final KVTaskClient client;
+    private final Gson gson;
 
+    public HttpTaskManager(int port) {
+        this(port, false);
     }
-    public void save() {
-        List<Task> tasks = new ArrayList<>();
-        tasks.addAll(getPrioritizedTasks());
-        tasks.addAll(getAllEpics());
-        try{
-            ManagerObjects managerObjects = new ManagerObjects(tasks, getHistory());
-        System.out.println(gson.toJson(managerObjects));
-        kvTaskClient.put(keyManager, gson.toJson(new ManagerObjects(tasks, getHistory())));
-        }catch (IOException|InterruptedException e){
-            System.out.println(e);
+
+    public HttpTaskManager(int port, boolean load) {
+        super(null);
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(Subtask.class, new SubtaskDeserializer())
+                .registerTypeAdapter(Epic.class, new EpicDeserializer())
+                .registerTypeAdapter(Task.class, new TaskDeserializer())
+                .create();
+        client = new KVTaskClient("http://localhost:" + port + "/");
+        if (load) {
+            load();
         }
     }
-    static class ManagerObjects{
-        private final List<Task> tasks;
-        private final List<Task> history;
 
-        public ManagerObjects(List<Task> tasks, List<Task> history) {
-            this.tasks = tasks;
-            this.history = history;
-        }
-
-        public List<Task> getTasks() {
-            return tasks;
-        }
-
-        public List<Task> getHistory() {
-            return history;
-        }
-    }
-    public TaskManager load() {
-        try{
-            ManagerObjects managerObjects = gson.fromJson(kvTaskClient.load(keyManager), ManagerObjects.class);
-            List<Task> tasks = managerObjects.getTasks();
-            List<Task> history = managerObjects.getHistory();
-            HttpTaskManager manager = new HttpTaskManager(url, keyManager);
-            for (Task task: tasks) {
-                manager.addAnyTask(task);
+    protected void addTasks(List<? extends Task> tasks) {
+        for (Task task : tasks) {
+            final int id = task.getId();
+            if (id > super.id) {
+                super.id = id;
             }
-            for (Task el:history) {
-                manager.historyManager.add(el);
+            Types type = task.getType();
+            if (type == Types.TASK) {
+                this.tasks.put(id, task);
+                sortedTasksAndSubtasks.add(task);
+            } else if (type == Types.SUBTASK) {
+                subtasks.put(id, (Subtask) task);
+                sortedTasksAndSubtasks.add(task);
+            } else if (type == Types.EPIC) {
+                epics.put(id, (Epic) task);
             }
-            return manager;
-        }catch (IOException|InterruptedException e){
-            System.out.println(e);
-            return null;
         }
     }
+
+    @Override
+    protected void save() {
+        String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
+        client.put("tasks", jsonTasks);
+        String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));
+        client.put("subtasks", jsonSubtasks);
+        String jsonEpics = gson.toJson(new ArrayList<>(epics.values()));
+        client.put("epics", jsonEpics);
+        String jsonHistory = gson.toJson(historyManager.getHistory().stream().map(Task::getId).collect(Collectors.toList()));
+        client.put("history", jsonHistory);
+    }
+
+    public void load() {
+        ArrayList<Task> tasks = gson.fromJson(client.load("tasks"), new TypeToken<ArrayList<Task>>() {
+        }.getType());
+        addTasks(tasks);
+
+        ArrayList<Epic> epics = gson.fromJson(client.load("epics"), new TypeToken<ArrayList<Epic>>() {
+        }.getType());
+        addTasks(epics);
+        ArrayList<Subtask> subtasks = gson.fromJson(client.load("subtasks"), new TypeToken<ArrayList<Subtask>>() {
+        }.getType());
+        addTasks(subtasks);
+        List<Integer> history = gson.fromJson(client.load("history"), new TypeToken<ArrayList<Integer>>() {
+        }.getType());
+
+        for (Integer taskId : history) {
+            historyManager.add(findTask(taskId));
+        }
+    }
+
     @Override
     public void deleteTasks() {
         super.deleteTasks();

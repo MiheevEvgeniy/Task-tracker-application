@@ -1,18 +1,11 @@
 package ru.java.project.schedule.server.deserializers;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import ru.java.project.schedule.tasks.Subtask;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class SubtaskDeserializer implements JsonDeserializer<Subtask> {
     @Override

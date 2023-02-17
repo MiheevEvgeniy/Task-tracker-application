@@ -58,7 +58,6 @@ public class InMemoryTaskManager implements TaskManager {
                 updatedTask.setStatus(tasks.get(updatedTask.getId()).getStatus());
             }
             sortedTasksAndSubtasks.remove(tasks.get(updatedTask.getId()));
-            System.out.println(getPrioritizedTasks());
             tasks.put(updatedTask.getId(), updatedTask);
             add(updatedTask);
         } else {
@@ -189,6 +188,10 @@ public class InMemoryTaskManager implements TaskManager {
         subtask.setId(id + 1);
         if (subtask.getStatus() == null) {
             subtask.setStatus(Status.NEW);
+        }
+        if (epics.get(subtask.getEpicId()) == null) {
+            System.out.println("Эпик для подзадачи не найден");
+            return;
         }
         add(subtask);
         id++;

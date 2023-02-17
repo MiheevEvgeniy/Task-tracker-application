@@ -1,16 +1,8 @@
 package ru.java.project.schedule.managers;
 
-import java.io.File;
-import java.io.IOException;
-
 public class Managers {
     public static TaskManager getDefault() {
-        try {
-            return new HttpTaskManager("http://localhost:8078/","1");
-        }catch (IOException|InterruptedException e){
-            System.out.println(e);
-            return null;
-        }
+        return new HttpTaskManager(8078);
     }
 
     public static HistoryManager getDefaultHistory() {

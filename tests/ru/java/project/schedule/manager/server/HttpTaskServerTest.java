@@ -1,12 +1,9 @@
 package ru.java.project.schedule.manager.server;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import ru.java.project.schedule.managers.HttpTaskManager;
 import ru.java.project.schedule.server.HttpTaskServer;
 import ru.java.project.schedule.server.KVServer;
@@ -28,6 +25,8 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HttpTaskServerTest {
     HttpTaskServer httpTaskServer;
     KVServer kvServer;
@@ -41,7 +40,7 @@ public class HttpTaskServerTest {
         try {
             kvServer = new KVServer();
             kvServer.start();
-            httpTaskServer = new HttpTaskServer(new HttpTaskManager("http://localhost:8078/", "1"));
+            httpTaskServer = new HttpTaskServer(new HttpTaskManager(8078));
             httpTaskServer.start();
             gson = new GsonBuilder()
                     .setLenient()
@@ -50,7 +49,7 @@ public class HttpTaskServerTest {
                     .registerTypeAdapter(Epic.class, new EpicDeserializer())
                     .registerTypeAdapter(Task.class, new TaskDeserializer())
                     .create();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             System.out.println(e);
         }
     }
@@ -65,12 +64,10 @@ public class HttpTaskServerTest {
     public void endpointTask() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\n" +
-                            "\t\"name\":\"JSON Task\",\n" +
-                            "\t\"description\":\"JSON Description\",\n" +
-                            "\t\"startTime\":\"10.11.2037 19:30\",\n" +
-                            "\t\"duration\":\"103\"\n" +
-                            "}"))
+                    .POST(HttpRequest.BodyPublishers.ofString("{'name':'JSON Task'," +
+                            "'description':'JSON Description'," +
+                            "'startTime':'10.11.2037 19:30'," +
+                            "'duration':'103'}"))
                     .uri(URI.create(url + "tasks/task/"))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
@@ -78,12 +75,10 @@ public class HttpTaskServerTest {
             httpClient.send(request, handler);
 
             request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\n" +
-                            "\t\"name\":\"JSON Task2\",\n" +
-                            "\t\"description\":\"JSON Description2\",\n" +
-                            "\t\"startTime\":\"10.11.2038 19:30\",\n" +
-                            "\t\"duration\":\"103\"\n" +
-                            "}"))
+                    .POST(HttpRequest.BodyPublishers.ofString("{'name':'JSON Task2'," +
+                            "'description':'JSON Description2'," +
+                            "'startTime':'10.11.2038 19:30'," +
+                            "'duration':'103'}"))
                     .uri(URI.create(url + "tasks/task/"))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
@@ -97,12 +92,11 @@ public class HttpTaskServerTest {
                     .build();
             handler = HttpResponse.BodyHandlers.ofString();
             HttpResponse<String> response = httpClient.send(request, handler);
-            System.out.println(response.body());
             JsonElement jsonElement = JsonParser.parseString(response.body());
             Task task = gson.fromJson(jsonElement.getAsJsonObject(), Task.class);
 
             assertNotNull(task, "Задача не найдена");
-            assertEquals(new Task("JSON Task", "JSON Description" , LocalDateTime.of(2037, Month.NOVEMBER,10, 19,30),103), task);
+            assertEquals(new Task("JSON Task", "JSON Description", LocalDateTime.of(2037, Month.NOVEMBER, 10, 19, 30), 103), task);
 
             request = HttpRequest.newBuilder()
                     .GET()
@@ -124,8 +118,8 @@ public class HttpTaskServerTest {
             assertNotNull(tasks);
 
             List<Task> expectedTasks = new ArrayList<>();
-            expectedTasks.add(new Task("JSON Task", "JSON Description" , LocalDateTime.of(2037, Month.NOVEMBER,10, 19,30),103));
-            expectedTasks.add(new Task("JSON Task2", "JSON Description2" , LocalDateTime.of(2038, Month.NOVEMBER,10, 19,30),103));
+            expectedTasks.add(new Task("JSON Task", "JSON Description", LocalDateTime.of(2037, Month.NOVEMBER, 10, 19, 30), 103));
+            expectedTasks.add(new Task("JSON Task2", "JSON Description2", LocalDateTime.of(2038, Month.NOVEMBER, 10, 19, 30), 103));
             assertEquals(expectedTasks, tasks);
 
             request = HttpRequest.newBuilder()
@@ -144,7 +138,7 @@ public class HttpTaskServerTest {
             handler = HttpResponse.BodyHandlers.ofString();
             response = httpClient.send(request, handler);
 
-            assertEquals("null",response.body());
+            assertEquals("null", response.body());
 
             request = HttpRequest.newBuilder()
                     .DELETE()
@@ -170,14 +164,13 @@ public class HttpTaskServerTest {
             System.out.println(e.getStackTrace()[0]);
         }
     }
+
     @Test
     public void endpointSubtask() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\n" +
-                            "\t\"name\":\"JSON Epic\",\n" +
-                            "\t\"description\":\"JSON Description\",\n" +
-                            "}"))
+                    .POST(HttpRequest.BodyPublishers.ofString("{'name':'JSON Epic'," +
+                            "'description':'JSON Description'}"))
                     .uri(URI.create(url + "tasks/epic/"))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
@@ -185,27 +178,24 @@ public class HttpTaskServerTest {
             httpClient.send(request, handler);
 
             request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\n" +
-                            "\t\"name\":\"JSON Subtask\",\n" +
-                            "\t\"description\":\"JSON Description\",\n" +
-                            "\t\"startTime\":\"10.11.2037 19:30\",\n" +
-                            "\t\"duration\":\"103\"\n" +
-                            "\t\"epicId\":\"1\"\n" +
-                            "}"))
+                    .POST(HttpRequest.BodyPublishers.ofString("{'name':'JSON Subtask'," +
+                            "'description':'JSON Description'," +
+                            "'startTime':'10.11.2037 19:30'," +
+                            "'duration':'103'," +
+                            "'epicId':'1'}"))
                     .uri(URI.create(url + "tasks/subtask/"))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
+
             handler = HttpResponse.BodyHandlers.ofString();
             httpClient.send(request, handler);
 
             request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\n" +
-                            "\t\"name\":\"JSON Subtask2\",\n" +
-                            "\t\"description\":\"JSON Description2\",\n" +
-                            "\t\"startTime\":\"10.11.2038 19:30\",\n" +
-                            "\t\"duration\":\"103\"\n" +
-                            "\t\"epicId\":\"1\"\n" +
-                            "}"))
+                    .POST(HttpRequest.BodyPublishers.ofString("{'name':'JSON Subtask2'," +
+                            "'description':'JSON Description2'," +
+                            "'startTime':'10.11.2038 19:30'," +
+                            "'duration':'103'," +
+                            "'epicId':'1'}"))
                     .uri(URI.create(url + "tasks/subtask/"))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
@@ -224,7 +214,7 @@ public class HttpTaskServerTest {
             Subtask subtask = gson.fromJson(jsonElement.getAsJsonObject(), Subtask.class);
 
             assertNotNull(subtask, "Подзадача 1 не найдена");
-            assertEquals(new Subtask("JSON Subtask", "JSON Description" , LocalDateTime.of(2037, Month.NOVEMBER,10, 19,30),103, 1), subtask);
+            assertEquals(new Subtask("JSON Subtask", "JSON Description", LocalDateTime.of(2037, Month.NOVEMBER, 10, 19, 30), 103, 1), subtask);
 
             request = HttpRequest.newBuilder()
                     .GET()
@@ -237,7 +227,7 @@ public class HttpTaskServerTest {
             Subtask subtask2 = gson.fromJson(jsonElement.getAsJsonObject(), Subtask.class);
 
             assertNotNull(subtask, "Подзадача 2 не найдена");
-            assertEquals(new Subtask("JSON Subtask2", "JSON Description2" , LocalDateTime.of(2038, Month.NOVEMBER,10, 19,30),103, 1), subtask2);
+            assertEquals(new Subtask("JSON Subtask2", "JSON Description2", LocalDateTime.of(2038, Month.NOVEMBER, 10, 19, 30), 103, 1), subtask2);
 
             request = HttpRequest.newBuilder()
                     .GET()
@@ -254,15 +244,14 @@ public class HttpTaskServerTest {
             List<Subtask> subtasks = new ArrayList<>();
 
 
-
             for (int i = 0; i < jsonArray.size(); i++) {
                 subtasks.add(gson.fromJson(jsonArray.get(i).getAsJsonObject(), Subtask.class));
             }
             assertNotNull(subtasks);
 
             List<Task> expectedTasks = new ArrayList<>();
-            expectedTasks.add(new Subtask("JSON Subtask", "JSON Description" , LocalDateTime.of(2037, Month.NOVEMBER,10, 19,30),103,1));
-            expectedTasks.add(new Subtask("JSON Subtask2", "JSON Description2" , LocalDateTime.of(2038, Month.NOVEMBER,10, 19,30),103,1));
+            expectedTasks.add(new Subtask("JSON Subtask", "JSON Description", LocalDateTime.of(2037, Month.NOVEMBER, 10, 19, 30), 103, 1));
+            expectedTasks.add(new Subtask("JSON Subtask2", "JSON Description2", LocalDateTime.of(2038, Month.NOVEMBER, 10, 19, 30), 103, 1));
             assertEquals(expectedTasks, subtasks);
 
             request = HttpRequest.newBuilder()
@@ -284,7 +273,7 @@ public class HttpTaskServerTest {
             assertEquals("null", response.body());
 
         } catch (IOException | InterruptedException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
